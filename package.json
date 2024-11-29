@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Text editor",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "client-install": "cd client && npm install",
+    "client-build": "cd client && npm run build",
+    "heroku-postbuild": "npm run client-install && npm run client-build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "http": "^0.0.1-security",
+    "mongoose": "^8.8.3",
+    "nodemon": "^3.1.7",
+    "socket.io": "^4.8.1"
+  }
+}
