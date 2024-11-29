@@ -1,33 +1,33 @@
 import { Server } from 'socket.io';
 import express from 'express';
-import {createServer} from 'http';
+import { createServer } from 'http';
+import dotenv from 'dotenv';
+import serverless from 'serverless-http'; // For serverless compatibility
 
+import Connection from './database/db.js'; // Your DB connection logic
+import { getDocument, updateDocument } from './controller/document-controller.js'; // Document controller logic
 
-import Connection from './database/db.js';
-import { getDocument, updateDocument } from './controller/document-controller.js';
+dotenv.config(); // Load environment variables
 
-const PORT = process.env.PORT || 9000;
-
+// Replace this with your actual MongoDB connection string in .env
 const URL = process.env.MONGODB_URI || `mongodb://users:codeforinterview@texteditor-shard-00-00.h6zcr.mongodb.net:27017,texteditor-shard-00-01.h6zcr.mongodb.net:27017,texteditor-shard-00-02.h6zcr.mongodb.net:27017/?ssl=true&replicaSet=atlas-lm758k-shard-0&authSource=admin&retryWrites=true&w=majority&appName=TextEditor`;
 
 // Establish MongoDB connection
 Connection(URL);
 
-
 // Initialize express
 const app = express();
 
-if(process.env.NODE_ENV === 'production'){
+// Serve the client build if in production
+if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
-// Initialize https
+// Initialize HTTP server
 const httpServer = createServer(app);
-httpServer.listen(PORT);
 
-// Initialize socket.io server
+// Initialize Socket.IO server
 const io = new Server(httpServer);
-    
 
 // Event handling for WebSocket connections
 io.on('connection', (socket) => {
@@ -67,4 +67,13 @@ io.on('connection', (socket) => {
     });
 });
 
-console.log(`Socket.IO server running on PORT ${PORT}`);
+// Wrap the express app with serverless-http for Vercel
+export const handler = serverless(app);
+
+// If running locally (not in production), start the server
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 9000;
+    httpServer.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
