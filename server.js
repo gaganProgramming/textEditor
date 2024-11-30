@@ -3,7 +3,9 @@ import express from 'express';
 import { createServer } from 'http';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http'; // For serverless compatibility
+import cors from 'cors'; // For handling CORS
 
+import mongoose from 'mongoose'; // MongoDB
 import Connection from './database/db.js'; // Your DB connection logic
 import { getDocument, updateDocument } from './controller/document-controller.js'; // Document controller logic
 
@@ -12,16 +14,35 @@ dotenv.config(); // Load environment variables
 // Replace this with your actual MongoDB connection string in .env
 const URL = process.env.MONGODB_URI || `mongodb://users:codeforinterview@texteditor-shard-00-00.h6zcr.mongodb.net:27017,texteditor-shard-00-01.h6zcr.mongodb.net:27017,texteditor-shard-00-02.h6zcr.mongodb.net:27017/?ssl=true&replicaSet=atlas-lm758k-shard-0&authSource=admin&retryWrites=true&w=majority&appName=TextEditor`;
 
-// Establish MongoDB connection
-Connection(URL);
+// MongoDB connection logic
+const connectToDB = async () => {
+    try {
+        await mongoose.connect(URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('MongoDB connected successfully');
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+    }
+};
 
 // Initialize express
 const app = express();
+
+// Enable CORS
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from your frontend during dev
+    methods: ['GET', 'POST'],
+}));
 
 // Serve the client build if in production
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
+
+// Establish MongoDB connection
+connectToDB();
 
 // Initialize HTTP server
 const httpServer = createServer(app);
