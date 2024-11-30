@@ -1,7 +1,3 @@
-Here's a **README.md** tailored for your **Text Editor Project**:
-
----
-
 # **Text Editor**
 
 ## **Overview**
@@ -60,10 +56,26 @@ Follow these steps to set up and run the project locally:
 ## **Folder Structure**
 ```
 text-editor/
-├── css/                  # Stylesheets
-├── js/                   # JavaScript files
-├── index.html            # Main HTML file
-└── README.md             # Documentation
+├── client/                      # Frontend code
+│   ├── public/                  # Static files
+│   │   └── index.html
+│   ├── src/                     # React source code
+│   │   ├── components/          # React components
+│   │   ├── styles/              # CSS or SCSS files
+│   │   ├── App.js               # Main App component
+│   │   ├── index.js             # React entry point
+│   │   └── utils/               # Utility functions (optional)
+│   ├── package.json             # Frontend dependencies
+│   └── .env                     # Environment variables (optional)
+├── server/                      # Backend code
+│   ├── routes/                  # API routes
+│   ├── models/                  # Database models (if any)
+│   ├── server.js                # Main server file
+│   ├── package.json             # Backend dependencies
+│   └── .env                     # Environment variables
+├── README.md                    # Documentation
+└── .gitignore                   # Ignore unnecessary files
+
 ```
 
 ---
